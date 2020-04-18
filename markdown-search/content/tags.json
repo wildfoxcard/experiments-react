@@ -1,0 +1,28 @@
+{
+  "autocompleteList": [
+    {
+      "label": "React JS",
+      "search": "react"
+    },
+    {
+      "label": "JavaScript",
+      "search": "javascript"
+    },
+    {
+      "label": "Gatsby JS",
+      "search": "gatsby"
+    },
+    {
+      "label": "Node",
+      "search": "node"
+    },
+    {
+      "label": "Azure",
+      "search": "azure"
+    },
+    {
+      "label": "AWS",
+      "search": "aws"
+    }
+  ]
+}
