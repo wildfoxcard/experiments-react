@@ -4,18 +4,28 @@ import Autosuggest from 'react-autosuggest';
 import { Link } from "gatsby"
 import "./Search.css"
 
+export const search = ({index, value}) => { 
+    return index
+            .search(value, { expand: true })
+            // Map over each ID and return the full document
+            .map(({ ref }) => index.documentStore.getDoc(ref))
+}
+
 const featuredKeywords = [
     {
-        name: 'C',
-        year: 1972
+        id: "1",
+        title: 'C',
+        link: 1972
     },
     {
-        name: 'Elm',
-        year: 2012
+        id: "2",
+        title: 'Elm',
+        link: 2012
     },
     {
-        name: "JavaScript",
-        year: "1990"
+        id: "3",
+        title: "JavaScript",
+        link: "1990"
     }
 ]
 
@@ -23,55 +33,34 @@ const featuredKeywords = [
 function Search({ searchIndex }) {
     const [value, setValue] = useState("");
     //final
-    const [index, setIndex] = useState(Index.load(searchIndex))
+    const [index] = useState(Index.load(searchIndex))
 
     const keywordsReducer = (state, action) => {
-        console.log('state', state)
-        const newItems = index
-            .search(value, { expand: true })
-            // Map over each ID and return the full document
-            .map(({ ref }) => index.documentStore.getDoc(ref))
 
-        console.log('newItem', newItems)
+        // const newItems = index
+        //         .search(value, { expand: true })
+        //         // Map over each ID and return the full document
+        //         .map(({ ref }) => index.documentStore.getDoc(ref))
 
-        switch (action) {
-            case "featured":
-                console.log('featured set')
-                return featuredKeywords
-            case "clear":
-                return []
-            case "results":
-                return newItems
-            default:
-                return newItems ? newItems : []
-
-        }
+        return search({index, value}) 
     }
+
     const [suggestions, dispatchSuggestions] = useReducer(keywordsReducer, featuredKeywords);
 
 
     const onChange = (event, { newValue }) => {
         setValue(newValue)
-
-        console.log('newvalue', newValue, newValue.length)
-
-        // if (newValue.length === 1) {
-        //     dispatchSuggestions('clear')
-        // }
-        // this.setState({
-        //     value: newValue
-        // });
     };
 
-    // Teach Autosuggest how to calculate suggestions for any given input value.
-    const getSuggestions = value => {
-        const inputValue = value.trim().toLowerCase();
-        const inputLength = inputValue.length;
+    // // Teach Autosuggest how to calculate suggestions for any given input value.
+    // const getSuggestions = value => {
+    //     const inputValue = value.trim().toLowerCase();
+    //     const inputLength = inputValue.length;
 
-        return inputLength === 0 ? [] : suggestions.filter(word =>
-            word.name.toLowerCase().slice(0, inputLength) === suggestions
-        );
-    };
+    //     return inputLength === 0 ? [] : suggestions.filter(word =>
+    //         word.name.toLowerCase().slice(0, inputLength) === suggestions
+    //     );
+    // };
 
     // When suggestion is clicked, Autosuggest needs to populate the input
     // based on the clicked suggestion. Teach Autosuggest how to calculate the
@@ -81,7 +70,7 @@ function Search({ searchIndex }) {
     // Use your imagination to render suggestions.
     const renderSuggestion = suggestion => (
         <div>
-            {suggestion.name}
+            {suggestion.title}
         </div>
     );
 
@@ -89,8 +78,8 @@ function Search({ searchIndex }) {
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
     const onSuggestionsFetchRequested = ({ value }) => {
-        console.log('value', value)
-        dispatchSuggestions({ type: "results", value })
+        console.log('fetching... value', value)
+        dispatchSuggestions()
         // this.setState({
         //     suggestions: getSuggestions(value)
         // });
@@ -98,11 +87,7 @@ function Search({ searchIndex }) {
 
     // Autosuggest will call this function every time you need to clear suggestions.
     const onSuggestionsClearRequested = () => {
-        if (value.length > 0) {
-            dispatchSuggestions({ type: "clear" })
-        } else {
-            dispatchSuggestions("featured", "")
-        }
+        dispatchSuggestions('clear')
         // dispatchSuggestions({ type: "clear" })
         // this.setState({
         //     suggestions: []
@@ -111,7 +96,7 @@ function Search({ searchIndex }) {
 
     // Autosuggest will pass through all these props to the input.
     const inputProps = {
-        placeholder: 'Type a programming language',
+        placeholder: 'search',
         value,
         onChange: onChange
     };

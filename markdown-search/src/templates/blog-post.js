@@ -1,16 +1,19 @@
 import React from "react"
-import { Link, graphql } from "gatsby"
+import { Link, graphql, navigate } from "gatsby"
 
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
+import Tag from "../components/Tag"
+import Header from "../components/Header"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
-
+  const tags = data?.markdownRemark?.frontmatter?.tags;
+  
   return (
     <Layout location={location} title={siteTitle}>
       <SEO
@@ -18,6 +21,22 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         description={post.frontmatter.description || post.excerpt}
       />
       <article>
+        <Header/>
+        {tags && (
+            <div>
+              {tags.map((tag) => (
+                <Tag 
+                  key={tag}
+                  text={tag}
+                  isActive={false}
+                  onActivate={()=>{
+                    // console.log('location', location)
+                    navigate(`/?tag=${tag}`)
+                  }}
+                />
+              ))}
+            </div>
+          )}
         <header>
           <h1
             style={{
@@ -36,6 +55,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
           >
             {post.frontmatter.date}
           </p>
+          
         </header>
         <section dangerouslySetInnerHTML={{ __html: post.html }} />
         <hr
@@ -95,6 +115,7 @@ export const pageQuery = graphql`
         title
         date(formatString: "MMMM DD, YYYY")
         description
+        tags
       }
     }
   }

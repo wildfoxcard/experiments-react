@@ -1,19 +1,69 @@
-import React from "react"
-import { Link, graphql } from "gatsby"
+import React, { useState, useReducer, useEffect } from "react"
+import { Link, StaticQuery, graphql } from "gatsby"
+import queryString from 'query-string'
 
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm } from "../utils/typography"
+import Tag from "../components/Tag"
+import Header from "../components/Header"
+
+
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata.title
-  const posts = data.allMarkdownRemark.edges
+  const sitePosts = data.allMarkdownRemark.edges;
+
+  // gets the tag param if in url.
+  const [activeTag, setActiveTag] = useState(queryString.parse(location?.search)?.tag)
+
+  const [posts, dispatchPosts]  = useReducer((state, action) => action, sitePosts)
+  const [tags, dispatchTags] = useReducer((state, action) => action,[])
+
+  useEffect(() => {
+    const newTags = posts.map(({ node }) => node.frontmatter.tags).flat()
+    console.log('newTags', newTags)
+    dispatchTags(Array.from(new Set(newTags)))
+  }, [])
+
+  useEffect(() => {
+    if (!activeTag) {
+      dispatchPosts(sitePosts)
+      return;
+    }
+
+    const newPosts = data.allMarkdownRemark.edges.filter(({node}) =>{
+      return node.frontmatter.tags.includes(activeTag)
+    })
+    dispatchPosts(newPosts)
+  }, [activeTag])
 
   return (
-    <Layout location={location} title={siteTitle}>
+    <Layout location={location} title={siteTitle} titleOnClick={() => setActiveTag(undefined)}>
       <SEO title="All posts" />
-      <Bio />
+      <hr/>
+      <Header />
+      <div>
+        
+        {tags && tags.map((tag, i) => {
+          console.log('tags', tags)
+          return (
+            // <div key={i}>{tag}</div>
+            <Tag 
+              key={i}
+              isActive={activeTag === tag}
+              text={tag} 
+              onActivate={() => setActiveTag(tag)} 
+              onDeactivate={() => setActiveTag(undefined)}
+            />
+          )
+        })}
+        <div>
+          <small><em>Powered by - Wild Fox Card</em></small>
+        </div>
+        <hr />
+      </div>
       {posts.map(({ node }) => {
         const title = node.frontmatter.title || node.fields.slug
         return (
@@ -64,6 +114,7 @@ export const pageQuery = graphql`
             date(formatString: "MMMM DD, YYYY")
             title
             description
+            tags
           }
         }
       }

@@ -1,7 +1,7 @@
 import React from "react"
 import { StaticQuery, graphql } from "gatsby"
 
-import Search from "./search"
+import Search from "./Search"
 
 const Header = () => (
   <StaticQuery
@@ -14,7 +14,6 @@ const Header = () => (
     `}
     render={data => (
       <header>
-        Search
         <Search searchIndex={data.siteSearchIndex.index} />
       </header>
     )}
