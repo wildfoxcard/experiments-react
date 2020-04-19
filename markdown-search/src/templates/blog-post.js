@@ -1,12 +1,11 @@
 import React from "react"
-import { Link, graphql, navigate } from "gatsby"
+import { Link, graphql } from "gatsby"
 
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
-import Tag from "../components/Tag"
-import Header from "../components/Header"
+import SmallSearchDisplay from "../components/Search/SmallSearchDisplay"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
@@ -21,22 +20,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         description={post.frontmatter.description || post.excerpt}
       />
       <article>
-        <Header/>
-        {tags && (
-            <div>
-              {tags.map((tag) => (
-                <Tag 
-                  key={tag}
-                  text={tag}
-                  isActive={false}
-                  onActivate={()=>{
-                    // console.log('location', location)
-                    navigate(`/?tag=${tag}`)
-                  }}
-                />
-              ))}
-            </div>
-          )}
+        <SmallSearchDisplay tags={tags} />
         <header>
           <h1
             style={{

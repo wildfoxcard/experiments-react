@@ -2,12 +2,12 @@ import React, {useState} from 'react'
 
 import './Tag.css'
 
-function Tag({text, onActivate, onDeactivate, isActive}) {
+function Tag({text, onActivate, onDeactivate, isActive, shouldLookActive}) {
 
     return (
         <div 
             onClick={isActive ? onDeactivate : onActivate}
-            className={`${isActive ? "tag active" : "tag"}`}    
+            className={`${isActive || shouldLookActive ? "tag active" : "tag"}`}    
         >
             {text}
             {isActive && (

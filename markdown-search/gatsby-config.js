@@ -1,9 +1,9 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `Gatsby Starter Blog with Search`,
     author: {
-      name: `Kyle Mathews`,
-      summary: `who lives and works in San Francisco building useful things.`,
+      name: `WildFoxCard`,
+      summary: `The WildFoxCard is rarely seen out of his den because building useful things.`,
     },
     description: `A starter blog demonstrating what Gatsby can do.`,
     siteUrl: `https://gatsby-starter-blog-demo.netlify.com/`,
@@ -89,8 +89,10 @@ module.exports = {
               console.log(`node title: ${node.frontmatter.title}`, 'node', node)
               return node.frontmatter.title
             },
+            description: node => node.frontmatter.description,
             tags: node => node.frontmatter.tags,
             path: node => node.frontmatter.path,
+            slug: node => node.fields.slug
           },
         },
         // Optional filter to limit indexed nodes

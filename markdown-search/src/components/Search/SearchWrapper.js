@@ -3,7 +3,7 @@ import { StaticQuery, graphql } from "gatsby"
 
 import Search from "./Search"
 
-const Header = () => (
+const SearchWrapper = () => (
   <StaticQuery
     query={graphql`
       query SearchIndexQuery {
@@ -20,4 +20,4 @@ const Header = () => (
   />
 )
 
-export default Header
+export default SearchWrapper
